@@ -1,6 +1,10 @@
 <?php
 
-require_once 'Admin.php';
-require_once 'ContentCallback.php';
-require_once 'Dashboard.php';
-require_once 'dashboard-widget.php';
+/*foreach ( glob('src/*.php') as $value ) {
+	echo $value;
+	require_once $value;
+}*/
+
+require_once 'src/Admin.php';
+require_once 'src/Widget.php';
+require_once 'src/dashboard-widget.php';
