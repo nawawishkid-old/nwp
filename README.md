@@ -1,0 +1,1 @@
+# WordPress API in OOP way.
