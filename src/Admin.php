@@ -2,12 +2,10 @@
 
 namespace NWP;
 
-use NWP\ContentCallback;
-
 /**
  * 
  */
-class Admin {
+class Admin implements HTMLPage {
 
 	private $scripts = [];
 	private $styles = [];
@@ -33,7 +31,7 @@ class Admin {
 	 *
 	 * @return void
 	 */
-	public function build() {
+	public function create() {
 		if ( !empty( $this->widgets ) )
 			\add_action( 'widgets_init', [$this, '_addWidgets'], 10 );
 
@@ -102,6 +100,20 @@ class Admin {
 	/**
 	 *********************
 	 * End of Scripts Section
+	 *********************
+	 */
+
+	/**
+	 *********************
+	 * Page Section
+	 *********************
+	 */
+	public function addMenu( Menu $menu ) {
+
+	}
+	/**
+	 *********************
+	 * End of Page Section
 	 *********************
 	 */
 

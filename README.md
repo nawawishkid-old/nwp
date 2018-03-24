@@ -12,29 +12,31 @@ Widgets were originally designed to provide a simple and easy-to-use way of givi
 ```php
 use NWP\Admin;
 use NWP\Page;
-use NWP\ContentCallback;
 use NWP\Widget;
 
 $admin = new Admin();
 $my_widget = new Widget( 'base_id', 'Widget Name', 'Widget description');
-$my_page = new Page( 'Title', 'slug', 'page_content' )
-				->addSubPage( 'Title', 'slug', 'subpage_content' ) 
-				// Optional. Add specific-page style and script
-				->addStyle( 'slug', 'path/to/file.css' )
-				->addStyles( [
-					['slug', 'path/to/file.css'],
-					['slug-2', 'path/to/file2.css']
-				] )
-				->addScript( 'slug', 'path/to/file.js' )
+$my_page = new Page( 'Title', 'slug', 'page_content' );
 
-$admin->addStyle( 'my-admin-css', 'path/to/file.css' ) // the path will append to theme directory path
-		->addScript( 'my-admin-js', 'path/to/file.js' )
-		->addPage( $my_page )
-		->hidePages( ['edit.php', 'upload.php', 'themes.php'] )
-		->addDashboardWidget( 'Title', 'slug', 'dashboard_widget_content' )
-		->addWidget( $my_widget );
+$my_widget	->addWidgetCallback( 'user_widget_callback' )
+			->addFormCallback( 'user_form_callback' )
+			->addUpdateCallback( 'user_update_callback' );
 
-$admin->build();
+$my_page	->addSubPage( 'Title', 'slug', 'subpage_content' ) 
+			->addStyle( [
+				['slug', 'path/to/file.css'],
+				['slug-2', 'path/to/file2.css']
+			] )
+			->addScript( 'slug', 'path/to/file.js' )
+
+$admin 		->addStyle( 'my-admin-css', 'path/to/file.css' ) 
+			->addScript( 'my-admin-js', 'path/to/file.js' )
+			->addPage( $my_page )
+			->hidePages( ['edit.php', 'upload.php', 'themes.php'] )
+			->addDashboardWidget( 'Title', 'slug', 'dashboard_widget_content' )
+			->addWidget( $my_widget );
+
+$admin->create();
 ```
 
 ### The widget API is not available due to the bug I still haven't found a way to fix it yet. :(
