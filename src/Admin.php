@@ -61,7 +61,7 @@ class Admin {
 	public function addStyle( $name, $path = null ) {
 		if ( is_array( $name ) ) {
 			foreach ( $name as $n ) {
-				$this->_addStyle( $name, $path );
+				$this->_addStyle( $n[0], $n[1] );
 			}
 
 			return $this;
@@ -82,7 +82,7 @@ class Admin {
 	public function addScript( $name, $path = null ) {
 		if ( is_array( $name ) ) {
 			foreach ( $name as $n ) {
-				$this->_addScript( $name, $path );
+				$this->_addScript( $n[0], $n[1] );
 			}
 
 			return $this;
