@@ -39,7 +39,71 @@ class Admin {
 
 		if ( !empty( $this->hiddenWidgets ) || $this->noWidget )
 			\add_action( 'widgets_init', [$this, '_hideWidgets'], 20 );
+
+		\add_action( 'admin_enqueue_scripts', [$this, '_handleScripts'] );
 	}
+
+	/**
+	 *********************
+	 * Scripts Section
+	 *********************
+	 */
+	public function _handleScripts() {
+		foreach ( $this->styles as $style ) {
+			wp_enqueue_style( $style[0], $style[1] );
+		}
+
+		foreach ( $this->scripts as $script ) {
+			wp_enqueue_script( $script[0], $script[1] );
+		}
+	}
+
+	public function addStyle( $name, $path = null ) {
+		if ( is_array( $name ) ) {
+			foreach ( $name as $n ) {
+				$this->_addStyle( $name, $path );
+			}
+
+			return $this;
+		}
+
+		$this->_addStyle( $name, $path );
+		
+		return $this;
+	}
+
+	private function _addStyle( $name, $path ) {
+		if ( ! is_string( $name ) || ! is_string( $path ) )
+			throw new \InvalidArgumentException("Type of given parameter is invalid.");
+
+		$this->styles[] = [$name, \get_stylesheet_directory_uri() . '/' . $path];
+	}
+
+	public function addScript( $name, $path = null ) {
+		if ( is_array( $name ) ) {
+			foreach ( $name as $n ) {
+				$this->_addScript( $name, $path );
+			}
+
+			return $this;
+		}
+
+		$this->_addScript( $name, $path );
+		
+		return $this;
+	}
+
+	private function _addScript( $name, $path ) {
+		if ( ! is_string( $name ) || ! is_string( $path ) )
+			throw new \InvalidArgumentException("Type of given parameter is invalid.");
+
+		$this->scripts[] = [$name, \get_stylesheet_directory_uri() . '/' . $path];
+	}
+	/**
+	 *********************
+	 * End of Scripts Section
+	 *********************
+	 */
 
 	/**
 	 *********************

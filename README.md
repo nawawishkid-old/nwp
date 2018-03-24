@@ -13,10 +13,13 @@ Widgets were originally designed to provide a simple and easy-to-use way of givi
 use NWP\Admin;
 use NWP\Page;
 use NWP\ContentCallback;
+use NWP\Widget;
 
 $admin = new Admin();
-$admin->addStyle( 'slug', 'path/to/file.css' )
-	  ->addScript( 'slug', 'path/to/file.js' )
+$my_widget = new Widget( 'base_id', 'Widget Name', 'Widget description');
+
+$admin->addStyle( 'my-admin-css', 'path/to/file.css' ) // the path will append to theme directory path
+	  ->addScript( 'my-admin-js', 'path/to/file.js' )
 	  ->addPage( 
 			new Page( 'Title', 'slug', 'page_content' )
 				->addSubPage( 'Title', 'slug', 'subpage_content' ) 
@@ -30,7 +33,9 @@ $admin->addStyle( 'slug', 'path/to/file.css' )
 	   )
 	   ->hidePages( ['edit.php', 'upload.php', 'themes.php'] )
 	   ->addDashboardWidget( 'Title', 'slug', 'dashboard_widget_content' )
-	   ->addWidget()
+	   ->addWidget( $my_widget );
 
 $admin->build();
 ```
+
+### The widget API is not available due to the bug I still haven't found a way to fix it. :(

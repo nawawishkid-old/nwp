@@ -2,6 +2,19 @@
 
 namespace NWP;
 
+/**
+ * !BUG!: Still cannot update form.
+ * Data from HTML form is not store in database, 
+ * then the get_settings method of WP_Widget return null.
+ * which is the $instance parameter of Widget::form()
+ *
+ * I haven't fount a way to fix it yet.
+ *
+ * Related code: 
+ * @see ajax-actions.php > wp_ajax_save_widget()
+ * @see class-wp-widget.php
+ */
+
 class Widget extends \WP_Widget {
 	private $user_widget_callback;
 	private $user_form_callback;
@@ -33,7 +46,7 @@ class Widget extends \WP_Widget {
 	 */
 	public function widget( $args, $instance ) {
 		// outputs the content of the widget
-		\call_user_func_array( $this->user_widget_callback, [$args, $instance] );
+		\call_user_func_array( $this->user_widget_callback, [$args, $instance, $this] );
 	}
 
 	/**
@@ -42,8 +55,10 @@ class Widget extends \WP_Widget {
 	 * @param array $instance The widget options
 	 */
 	public function form( $instance ) {
+		echo 'NWP\Widget::form()<br>';
+		var_dump( $instance );
 		// outputs the options form on admin
-		\call_user_func_array( $this->user_form_callback, [$args, $instance] );
+		\call_user_func_array( $this->user_form_callback, [$instance, $this] );
 	}
 
 	/**
@@ -56,6 +71,12 @@ class Widget extends \WP_Widget {
 	 */
 	public function update( $new_instance, $old_instance ) {
 		// processes widget options to be saved
+		echo 'update!';
+		echo '<pre>';
+		var_dump( $new_instance );
+		var_dump( $old_instance );
+		echo '</pre>';
+		
 		\call_user_func_array( $this->user_update_callback, [$new_instance, $old_instance] );
 	}
 
