@@ -84,6 +84,8 @@ class Menu extends SubMenu {
 	/**
 	 *********************
 	 * Menu hiding
+	 * @see https://codex.wordpress.org/Function_Reference/remove_menu_page
+	 * @see https://codex.wordpress.org/Function_Reference/remove_submenu_page
 	 *********************
 	 */
 	/**
