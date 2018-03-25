@@ -40,7 +40,7 @@ Menu::hide( 'nwp-menu', 'nwp-submenu' );
 Menu::hide( $my_menu, $my_submenu );
 ```
 
-### Future usage
+## Future usage
 ```php
 use NWP\Widget;
 
