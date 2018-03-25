@@ -41,7 +41,7 @@ Menu::hide( $my_menu, $my_submenu );
 ```
 
 ### Future usage
-```
+```php
 use NWP\Widget;
 
 $widget = new Widget( 'widget_id', 'Widget Name', 'Widget description');
