@@ -8,7 +8,7 @@ A simple and standardized way of storing data in the database. The API makes it 
 ### Widgets API
 Widgets were originally designed to provide a simple and easy-to-use way of giving design and structure control of the WordPress Theme to the user, which is now available on properly "widgetized" WordPress Themes to include the header, footer, and elsewhere in the WordPress design and structure. [More](https://codex.wordpress.org/Widgets_API)
 
-## Current usage
+## Currently available usage.
 ```php
 use NWP\Menu;
 use NWP\SubMenu;
