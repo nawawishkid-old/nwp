@@ -2,15 +2,22 @@
 
 namespace NWP;
 
+use NWP\Interfaces\Styleable;
+use NWP\Interfaces\Scriptable;
+use NWP\Traits\ArgumentValidation;
+
 /**
  * 
  */
-class Admin implements HTMLPage {
+class Admin implements Styleable, Scriptable {
+
+	use ArgumentValidation;
 
 	private $scripts = [];
 	private $styles = [];
 	private $dashboard_widgets = [];
-	private $pages = [];
+	private $menus = [];
+	private $hiddenMenuSlugs = [];
 
 	/**
 	 * @var array
@@ -39,7 +46,40 @@ class Admin implements HTMLPage {
 			\add_action( 'widgets_init', [$this, '_hideWidgets'], 20 );
 
 		\add_action( 'admin_enqueue_scripts', [$this, '_handleScripts'] );
+
+		if ( ! empty( $this->hiddenMenuSlugs ) )
+			\add_action( 'admin_menu', [$this, '_hideMenu']);
 	}
+	/**
+	 *********************
+	 * Menu Section
+	 *********************
+	 */
+	public function hideMenu( $slug ) {
+		if ( ! is_string( $slug ) && ! is_array( $slug ) )
+			throw new \InvalidArgumentException("Type of given parameter is invalid.");
+
+		if ( is_string( $slug ) )
+			$this->hiddenMenuSlugs[] = $slug;
+
+		if ( is_array( $slug ) )
+			foreach ( $slug as $n ) {
+				$this->hiddenMenuSlugs[] = $n;
+			}
+
+		return $this;
+	}
+
+	public function _hideMenu() {
+		foreach ( $this->hiddenMenuSlugs as $slug ) {
+			\remove_menu_page( $slug );
+		}
+	}
+	/**
+	 *********************
+	 * End of Menu Section
+	 *********************
+	 */
 
 	/**
 	 *********************
@@ -100,20 +140,6 @@ class Admin implements HTMLPage {
 	/**
 	 *********************
 	 * End of Scripts Section
-	 *********************
-	 */
-
-	/**
-	 *********************
-	 * Page Section
-	 *********************
-	 */
-	public function addMenu( Menu $menu ) {
-
-	}
-	/**
-	 *********************
-	 * End of Page Section
 	 *********************
 	 */
 

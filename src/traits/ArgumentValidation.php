@@ -1,6 +1,6 @@
 <?php
 
-namespace NWP;
+namespace NWP\Traits;
 
 use \InvalidArgumentException as Error;
 

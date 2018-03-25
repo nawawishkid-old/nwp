@@ -1,3 +1,4 @@
 <?php
 
-require_once 'HTMLPage.php';
+require_once 'Scriptable.php';
+require_once 'Styleable.php';
