@@ -8,12 +8,10 @@ A simple and standardized way of storing data in the database. The API makes it 
 ### Widgets API
 Widgets were originally designed to provide a simple and easy-to-use way of giving design and structure control of the WordPress Theme to the user, which is now available on properly "widgetized" WordPress Themes to include the header, footer, and elsewhere in the WordPress design and structure. [More](https://codex.wordpress.org/Widgets_API)
 
-## Expected usage
+## Current usage
 ```php
-use NWP\Admin;
 use NWP\Menu;
 use NWP\SubMenu;
-use NWP\Widget;
 
 /**
  * Create custom admin menu and submenu
@@ -40,22 +38,22 @@ Menu::hide( ['themes.php', 'edit.php'] );
 Menu::hide( 'nwp-menu', 'nwp-submenu' );
 // Hide submenu using Submenu instance
 Menu::hide( $my_menu, $my_submenu );
-
-$admin = new Admin();
-$my_widget = new Widget( 'base_id', 'Widget Name', 'Widget description');
-
-$my_widget	->addWidgetCallback( 'user_widget_callback' )
-			->addFormCallback( 'user_form_callback' )
-			->addUpdateCallback( 'user_update_callback' );
-
-
-$admin 		->addStyle( 'my-admin-css', 'path/to/file.css' ) 
-			->addScript( 'my-admin-js', 'path/to/file.js' )
-			->addPage( $my_page )
-			->addDashboardWidget( 'Title', 'slug', 'dashboard_widget_content' )
-			->addWidget( $my_widget );
-
-$admin->create();
 ```
 
-### The widget API is not available due to the bug I still haven't found a way to fix it yet. :(
+### Future usage
+```
+use NWP\Widget;
+
+$widget = new Widget( 'widget_id', 'Widget Name', 'Widget description');
+
+$widget->addWidgetCallback( 'user_widget_callback' )
+	   ->addFormCallback( 'user_form_callback' )
+	   ->addUpdateCallback( 'user_update_callback' );
+	   ->create();
+
+function user_widget_callback() { /* content of widget on frontend page here */ }
+function user_form_callback() { /* form of widget on admin page here */ }
+function user_update_callback() { /* update widget setting here */ }
+```
+
+### The widget API above is currently unavailable due to the bug I still haven't found a way to fix it yet. :(
