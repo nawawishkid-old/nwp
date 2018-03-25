@@ -13,31 +13,37 @@ Widgets were originally designed to provide a simple and easy-to-use way of givi
 use NWP\Menu;
 use NWP\SubMenu;
 
-/**
- * Create custom admin menu and submenu
- */
-// Create menu and submenu
-$menu = new Menu( 'NWP Menu', 'nwp-menu', 'manage_options', function() {
-	echo 'NWP Custom Menu';
-});
+// Create menu.
+$menu = new Menu( 
+	'NWP Menu', 					// Menu name.
+	'nwp-menu', 					// Menu slug.
+	'manage_options', 				// Capability to see this menu.
+	function() { 					// Function to dispaly this menu content.
+		echo 'NWP Custom Menu';
+	}
+);
+
+// Create submenu.
 $submenu = new SubMenu( 'NWP Submenu', 'nwp-submenu', 'manage_options', function() {
 	echo 'NWP Custom Submenu';
 });
 
-// Add CSS and JS to submenu (menu can do this as well)
+// Optional. Add CSS and JS to submenu (Menu can do this as well).
 $submenu->addStyle( 'my-submenu-css', get_stylesheet_directory_uri() . '/inc/admin.css' )
 		->addScript( 'my-submenu-js', get_stylesheet_directory_uri() . '/inc/admin.js' );
 
-// Add submenu
-$menu->addSub( $submenu )
-	 ->create();
+// Add submenu to top-level menu 
+// and add the top-level menu to the admin menu bar.
+$menu->addSub( $submenu )->create();
 
-// Hide top level menu
+// Hide multiple top-level menu
 Menu::hide( ['themes.php', 'edit.php'] );
+
 // Hide submenu using slug
 Menu::hide( 'nwp-menu', 'nwp-submenu' );
+
 // Hide submenu using Submenu instance
-Menu::hide( $my_menu, $my_submenu );
+Menu::hide( $menu, $submenu );
 ```
 
 ## Future usage
