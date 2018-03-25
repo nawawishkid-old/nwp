@@ -11,28 +11,47 @@ Widgets were originally designed to provide a simple and easy-to-use way of givi
 ## Expected usage
 ```php
 use NWP\Admin;
-use NWP\Page;
+use NWP\Menu;
+use NWP\SubMenu;
 use NWP\Widget;
+
+/**
+ * Create custom admin menu and submenu
+ */
+// Create menu and submenu
+$menu = new Menu( 'NWP Menu', 'nwp-menu', 'manage_options', function() {
+	echo 'NWP Custom Menu';
+});
+$submenu = new SubMenu( 'NWP Submenu', 'nwp-submenu', 'manage_options', function() {
+	echo 'NWP Custom Submenu';
+});
+
+// Add CSS and JS to submenu (menu can do this as well)
+$submenu->addStyle( 'my-submenu-css', get_stylesheet_directory_uri() . '/inc/admin.css' )
+		->addScript( 'my-submenu-js', get_stylesheet_directory_uri() . '/inc/admin.js' );
+
+// Add submenu
+$menu->addSub( $submenu )
+	 ->create();
+
+// Hide top level menu
+Menu::hide( ['themes.php', 'edit.php'] );
+// Hide submenu using slug
+Menu::hide( 'nwp-menu', 'nwp-submenu' );
+// Hide submenu using Submenu instance
+Menu::hide( $my_menu, $my_submenu );
 
 $admin = new Admin();
 $my_widget = new Widget( 'base_id', 'Widget Name', 'Widget description');
-$my_page = new Page( 'Title', 'slug', 'page_content' );
 
 $my_widget	->addWidgetCallback( 'user_widget_callback' )
 			->addFormCallback( 'user_form_callback' )
 			->addUpdateCallback( 'user_update_callback' );
 
-$my_page	->addSubPage( 'Title', 'slug', 'subpage_content' ) 
-			->addStyle( [
-				['slug', 'path/to/file.css'],
-				['slug-2', 'path/to/file2.css']
-			] )
-			->addScript( 'slug', 'path/to/file.js' )
 
 $admin 		->addStyle( 'my-admin-css', 'path/to/file.css' ) 
 			->addScript( 'my-admin-js', 'path/to/file.js' )
 			->addPage( $my_page )
-			->hidePages( ['edit.php', 'upload.php', 'themes.php'] )
 			->addDashboardWidget( 'Title', 'slug', 'dashboard_widget_content' )
 			->addWidget( $my_widget );
 

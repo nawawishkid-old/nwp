@@ -34,7 +34,7 @@ class SubMenu implements Styleable, Scriptable {
 	 *********************
 	 */
 	public function addMenuTitle( $title ) {
-		$title = $this->isString( $title );
+		$title = self::isString( $title );
 
 		$this->menuTitle = $title;
 
@@ -42,7 +42,7 @@ class SubMenu implements Styleable, Scriptable {
 	}
 
 	public function addPageTitle( $title ) {
-		$title = $this->isString( $title );
+		$title = self::isString( $title );
 
 		$this->pageTitle = $title;
 
@@ -50,7 +50,7 @@ class SubMenu implements Styleable, Scriptable {
 	}
 
 	public function addSlug( $slug ) {
-		$slug = $this->isString( $slug );
+		$slug = self::isString( $slug );
 
 		$this->slug = $slug;
 
@@ -58,7 +58,7 @@ class SubMenu implements Styleable, Scriptable {
 	}
 
 	public function addCapability( $capability ) {
-		$capability = $this->isString( $capability );
+		$capability = self::isString( $capability );
 
 		$this->capability = $capability;
 
@@ -66,7 +66,7 @@ class SubMenu implements Styleable, Scriptable {
 	}
 
 	public function addCallback( $callback ) {
-		$callback = $this->isCallable( $callback );
+		$callback = self::isCallable( $callback );
 
 		$this->callback = $callback;
 
@@ -75,7 +75,6 @@ class SubMenu implements Styleable, Scriptable {
 
 	public function addStyle( $name, $path ) {
 		\add_action( 'admin_enqueue_scripts', function( $hookSuffix ) use ( $name, $path ) {
-			var_dump($hookSuffix);
 			if ( preg_match( "/$this->slug$/", $hookSuffix ) )
 				\wp_enqueue_style( $name, $path );
 		});

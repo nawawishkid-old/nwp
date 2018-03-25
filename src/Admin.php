@@ -17,7 +17,6 @@ class Admin implements Styleable, Scriptable {
 	private $styles = [];
 	private $dashboard_widgets = [];
 	private $menus = [];
-	private $hiddenMenuSlugs = [];
 
 	/**
 	 * @var array
@@ -46,40 +45,7 @@ class Admin implements Styleable, Scriptable {
 			\add_action( 'widgets_init', [$this, '_hideWidgets'], 20 );
 
 		\add_action( 'admin_enqueue_scripts', [$this, '_handleScripts'] );
-
-		if ( ! empty( $this->hiddenMenuSlugs ) )
-			\add_action( 'admin_menu', [$this, '_hideMenu']);
 	}
-	/**
-	 *********************
-	 * Menu Section
-	 *********************
-	 */
-	public function hideMenu( $slug ) {
-		if ( ! is_string( $slug ) && ! is_array( $slug ) )
-			throw new \InvalidArgumentException("Type of given parameter is invalid.");
-
-		if ( is_string( $slug ) )
-			$this->hiddenMenuSlugs[] = $slug;
-
-		if ( is_array( $slug ) )
-			foreach ( $slug as $n ) {
-				$this->hiddenMenuSlugs[] = $n;
-			}
-
-		return $this;
-	}
-
-	public function _hideMenu() {
-		foreach ( $this->hiddenMenuSlugs as $slug ) {
-			\remove_menu_page( $slug );
-		}
-	}
-	/**
-	 *********************
-	 * End of Menu Section
-	 *********************
-	 */
 
 	/**
 	 *********************
