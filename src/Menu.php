@@ -111,9 +111,9 @@ class Menu extends SubMenu {
 	 */
 	public function hide( $firstArg, $subMenuSlug = null ) {
 		if ( is_string( $firstArg ) && is_string( $subMenuSlug ) ) {
-			$func = [self, '__hideSingle'];
+			$func = [self, '_hideSingle'];
 		} elseif ( is_array( $firstArg ) ) {
-			$func = [self, '__hideMultiple'];
+			$func = [self, '_hideMultiple'];
 		}
 
 		\add_action( 'admin_menu', function() use ( $func, $firstArg, $subMenuSlug ) {
@@ -124,24 +124,24 @@ class Menu extends SubMenu {
 	}
 
 	/**
-	 * Call `Menu::__hideSingle` for each of given-arguement array.
+	 * Call `Menu::_hideSingle` for each of given-arguement array.
 	 *
 	 * After specifying whether given argument is just an array of slug string
-	 * or a nested array, this method will call `Menu::__hideSingle` to do the hiding job.
+	 * or a nested array, this method will call `Menu::_hideSingle` to do the hiding job.
 	 * This method may be used as a callback in WordPress `add_action` function.
 	 *
 	 * @param array $slugList 	Array of either top-level menu slug or
 	 *							menu-submenu array to be hidden.
 	 * @return void
 	 */
-	public static function __hideMultiple( array $slugList ) {
+	public static function _hideMultiple( array $slugList ) {
 		foreach ( $slugList as $slug ) {
 			if ( is_array( $slug ) ) {
-				self::__hideSingle( $slug[0], $slug[1] );
+				self::_hideSingle( $slug[0], $slug[1] );
 				continue;
 			}
 
-			self::__hideSingle( $slug );
+			self::_hideSingle( $slug );
 		}
 	}
 
@@ -164,7 +164,7 @@ class Menu extends SubMenu {
 	 * 							you want to hide multiple menus or submenus.	
 	 * @return void
 	 */
-	public static function __hideSingle( $menuSlug, $subMenuSlug = null ) {
+	public static function _hideSingle( $menuSlug, $subMenuSlug = null ) {
 		// Menu slug validation
 		$menuSlug = is_string( $menuSlug ) 
 				 	? $menuSlug 
