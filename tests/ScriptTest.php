@@ -111,15 +111,15 @@ final class ScriptTest extends TestCase
 	/**
 	 * Not complete, can't figure out a way to test this case.
 	 */
-	public function testCanBeEnqueuedWhenAllConditionsAreTrue() : void
-	{
-		$script = $this->getInstance();
+	// public function testCanBeEnqueuedWhenAllConditionsAreTrue() : void
+	// {
+	// 	$script = $this->getInstance();
 
-		foreach (range(0, 10) as $range) {
-			$script->when(function () { return true; });
-		}
+	// 	foreach (range(0, 10) as $range) {
+	// 		$script->when(function () { return true; });
+	// 	}
 
-	}
+	// }
 
 	// public function testCanAddWordPressFunction() : void
 	// {
