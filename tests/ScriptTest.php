@@ -3,7 +3,6 @@
 use PHPUnit\Framework\TestCase;
 use NWP\Script;
 
-
 final class ScriptTest extends TestCase
 {
 	private function getInstance() : Script
