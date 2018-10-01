@@ -6,6 +6,18 @@ class NavMenu
 {
 	const FUNCTION_WP_NAV_MENU = 'wp_nav_menu';
 
+	const FUNCTION_REGISTER_NAV_MENU = 'register_nav_menu';
+
+	const FUNCTION_REGISTER_NAV_MENUS = 'register_nav_menus';
+
+	const FUNCTION_UNREGISTER_NAV_MENU = 'unregister_nav_menu';
+
+	const FUNCTION_HAS_NAV_MENU = 'has_nav_menu';
+
+	const EVENT_INIT = 'init';
+
+	private static $locations = [];
+
 	private $info = [
 /*		'menu' => '',
 		'menu_class' => '',
@@ -32,6 +44,57 @@ class NavMenu
 	public function __get(string $name)
 	{
 		return $this->info[$name];
+	}
+
+	public static function addLocation($location, string $description = null)
+	{
+		$locations = is_array($location) 
+			? $location 
+			: [$location => $description];
+
+		self::$locations = array_merge(self::$locations, $locations);
+	}
+
+	/**
+	 * @see https://codex.wordpress.org/Function_Reference/register_nav_menus
+	 * @see https://codex.wordpress.org/Function_Reference/register_nav_menu
+	 */
+	public static function registerLocation()
+	{
+		$utils = Utils::getInstance();
+
+		$utils->addAction(
+			self::EVENT_INIT,
+			function() { call_user_func(self::FUNCTION_REGISTER_NAV_MENUS, self::$locations); }
+		);
+	}
+
+	/**
+	 * @see https://codex.wordpress.org/Function_Reference/unregister_nav_menu
+	 */
+	public static function unregisterLocation(...$locations)
+	{
+		$utils = Utils::getInstance();
+
+		$utils->addAction(
+			self::EVENT_INIT,
+			function() use ($locations) {
+				foreach ($locations as $location) {
+					call_user_func(self::FUNCTION_UNREGISTER_NAV_MENU, $location);
+				}
+			}
+		);
+	}
+
+	/**
+	 * ===== Need some testing! =====
+	 *
+	 * @see https://codex.wordpress.org/Function_Reference/has_nav_menu
+	 */
+	public static function locationHasMenu(string $name)
+	{
+		return has_nav_menu($name);
+		return call_user_func(self::FUNCTION_HAS_NAV_MENU, $name);
 	}
 
 	public static function prepare()
