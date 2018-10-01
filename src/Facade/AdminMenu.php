@@ -33,12 +33,12 @@ class AdminMenu extends BaseAdminMenu
 	const OPTIONS_PAGE = 'options';
 
 	/**
-	 * @param string $menuSlug Menu slug
+	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $menuSlug, string $menuTitle)
+	public function __construct(string $id, string $menuTitle)
 	{
-		parent::__construct($menuSlug, $menuTitle);
+		parent::__construct($id, $menuTitle);
 	}
 
 	public function iconUrl(string $url)
@@ -63,8 +63,8 @@ class AdminMenu extends BaseAdminMenu
 				$this->pageTitle,
 				$this->menuTitle,
 				$this->capability,
-				$this->menuSlug,
-				$this->pageContentHandler,
+				$this->id,
+				$this->pageContentRenderer,
 				$this->iconUrl,
 				$this->position
 			]

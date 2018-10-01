@@ -3,6 +3,7 @@
 namespace NWP\Facade;
 
 use NWP\Facade\AdminMenu;
+use NWP\Facade\AdminPage;
 use \InvalidArgumentException;
 
 abstract class BaseAdminMenu
@@ -13,8 +14,8 @@ abstract class BaseAdminMenu
 		'pageTitle' => '',
 		'menuTitle' => '',
 		'capability' => '',
-		'menuSlug' => '',
-		'pageContentHandler' => ''
+		'id' => '',
+		'pageContentRenderer' => ''
 	];
 
 	/**
@@ -23,12 +24,12 @@ abstract class BaseAdminMenu
 	abstract protected function add();
 
 	/**
-	 * @param string $menuSlug Menu slug
+	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $menuSlug, string $menuTitle)
+	public function __construct(string $id, string $menuTitle)
 	{
-		$this->info['menuSlug'] = $menuSlug;
+		$this->info['id'] = $id;
 		$this->info['menuTitle'] = $menuTitle;
 
 		$this->utils = Utils::getInstance();
@@ -42,6 +43,15 @@ abstract class BaseAdminMenu
 		return $this->info[$name];
 	}
 
+	public function linkTo(AdminPage $page)
+	{
+		$this->info['capability'] = $page->capability;
+		$this->info['pageTitle'] = $page->title;
+		$this->info['pageContentRenderer'] = $page->contentRenderer;
+
+		return $this;
+	}
+
 	/**
 	 * Set page title.
 	 *
@@ -49,12 +59,12 @@ abstract class BaseAdminMenu
 	 *
 	 * @return $this
 	 */
-	public function pageTitle(string $title)
-	{
-		$this->info['pageTitle'] = $title;
+	// public function pageTitle(string $title)
+	// {
+	// 	$this->info['pageTitle'] = $title;
 
-		return $this;
-	}
+	// 	return $this;
+	// }
 
 	/**
 	 * Authorization, set capability
@@ -63,12 +73,12 @@ abstract class BaseAdminMenu
 	 * 
 	 * @return $this
 	 */
-	public function auth(string $capability)
-	{
-		$this->info['capability'] = $capability;
+	// public function auth(string $capability)
+	// {
+	// 	$this->info['capability'] = $capability;
 
-		return $this;
-	}
+	// 	return $this;
+	// }
 
 	/**
 	 * Set callback for echoing page content
@@ -77,12 +87,12 @@ abstract class BaseAdminMenu
 	 *
 	 * @return $this
 	 */
-	public function addPageContentHandler(callable $callback)
-	{
-		$this->info['pageContentHandler'] = $callback;
+	// public function addPageContentHandler(callable $callback)
+	// {
+	// 	$this->info['pageContentHandler'] = $callback;
 
-		return $this;
-	}
+	// 	return $this;
+	// }
 
 	/**
 	 * Register submenu

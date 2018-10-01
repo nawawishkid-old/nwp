@@ -15,12 +15,12 @@ class AdminSubMenu extends BaseAdminMenu
 	const FUNCTION_ADD_SUBMENU_PAGE = 'add_submenu_page';
 
 	/**
-	 * @param string $menuSlug Menu slug
+	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $menuSlug, string $menuTitle)
+	public function __construct(string $id, string $menuTitle)
 	{
-		parent::__construct($menuSlug, $menuTitle);
+		parent::__construct($id, $menuTitle);
 	}
 
 	/**
@@ -47,7 +47,7 @@ class AdminSubMenu extends BaseAdminMenu
 		}
 
 		$parentSlug = $isAdminMenu 
-			? $parentMenu->name
+			? $parentMenu->id
 			: $parentMenu;
 
 		$this->info['parentSlug'] = $parentSlug;
@@ -67,8 +67,8 @@ class AdminSubMenu extends BaseAdminMenu
 				$this->pageTitle,
 				$this->menuTitle,
 				$this->capability,
-				$this->menuSlug,
-				$this->pageContentHandler
+				$this->id,
+				$this->pageContentRenderer
 			]
 		);
 	}
