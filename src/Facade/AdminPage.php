@@ -40,7 +40,7 @@ class AdminPage
 	 * 
 	 * @return $this
 	 */
-	public function auth(string $capability)
+	public function allow(string $capability)
 	{
 		$this->info['capability'] = $capability;
 
