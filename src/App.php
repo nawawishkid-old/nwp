@@ -2,7 +2,7 @@
 namespace NWP;
 
 use \WP_Widget;
-use NWP\Sidebar;
+use NWP\Facade\Sidebar;
 use \InvalidArgumentException;
 
 class App

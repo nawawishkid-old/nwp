@@ -1,9 +1,21 @@
 <?php
 
-namespace NWP;
+namespace NWP\Facade;
 
 class Sidebar
 {
+	const FUNCTION_IS_DYNAMIC_SIDEBAR = 'is_dynamic_sidebar';
+
+	const FUNCTION_IS_ACTIVE_SIDEBAR = 'is_active_sidebar';
+
+	const FUNCTION_DYNAMIC_SIDEBAR = 'dynamic_sidebar';
+
+	const FUNCTION_REGISTER_SIDEBAR = 'register_sidebar';
+
+	const FUNCTION_UNREGISTER_SIDEBAR = 'unregister_sidebar';	
+
+	const EVENT_WIDGETS_INIT = 'widgets_init';
+
 	/**
 	 * Sidebar arguments
 	 *
@@ -29,6 +41,7 @@ class Sidebar
 	 */
 	public function __construct(string $id, string $name, array $options = [])
 	{
+		$this->utils = Utils::getInstance();
 		$this->info = array_merge($this->info, $options);
 		$this->info['id'] = $id;
 		$this->info['name'] = $name;
@@ -44,7 +57,7 @@ class Sidebar
 	 */
 	public static function exists()
 	{
-		return is_dynamic_sidebar();
+		return call_user_func(self::FUNCTION_IS_DYNAMIC_SIDEBAR);
 	}
 
 	/**
@@ -65,7 +78,7 @@ class Sidebar
 	 */
 	public function render()
 	{
-		return dynamic_sidebar($this->name);
+		return call_user_func(self::FUNCTION_DYNAMIC_SIDEBAR, $this->name);
 	}
 
 	/**
@@ -78,34 +91,34 @@ class Sidebar
 	 */
 	public function isActive()
 	{
-		return is_active_sidebar($this->name);
+		return call_user_func(self::FUNCTION_IS_ACTIVE_SIDEBAR, $this->name);
 	}
 
 	/**
 	 * Register the Sidebar to WP
 	 *
-	 * @uses \add_action()
+	 * @uses \$this->utils->addAction()
 	 * @uses \register_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/register_sidebar
 	 */
 	public function register()
 	{
-		add_action('widget_inits', function() {
-			register_sidebar($this->info);
+		$this->utils->addAction(self::EVENT_WIDGETS_INIT, function() {
+			call_user_func(self::FUNCTION_REGISTER_SIDEBAR, $this->info);
 		});	
 	}
 
 	/**
 	 * Unregister the Sidebar from WP, usually useful for child theme.
 	 *
-	 * @uses \add_action()
+	 * @uses \$this->utils->addAction()
 	 * @uses \unregister_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/unregister_sidebar
 	 */
 	public function unregister()
 	{
-		add_action('widget_inits', function() {
-			unregister_sidebar($this->info);
+		$this->utils->addAction(self::EVENT_WIDGETS_INIT, function() {
+			call_user_func(self::FUNCTION_UNREGISTER_SIDEBAR, $this->info);
 		});	
 	}
 
@@ -156,4 +169,18 @@ class Sidebar
 
 		return $this;
 	}	
+
+	public function description(string $value)
+	{
+		$this->info['description'] = $value;
+
+		return $this;
+	}
+
+	public function className(string $value)
+	{
+		$this->info['class'] = $value;
+
+		return $this;
+	}
 }

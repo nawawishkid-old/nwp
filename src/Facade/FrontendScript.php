@@ -1,27 +1,24 @@
 <?php
 
-namespace NWP;
+namespace NWP\Facade;
 
-use NWP\WordPressCouple;
 use \Exception;
 use \InvalidArgumentException;
 
-class Style extends WordPressCouple
+class FrontendScript
 {
-	const WP_FUNCTIONS_WP_ENQUEUE_STYLE = 'wp_enqueue_style';
-
-	private $info = [
+	protected $info = [
 		'id' => '',
 		'src' => '',
 		'dependencies' => [],
 		'version' => '',
-		'media' => true,
 		'priority' => null,
 		'conditions' => []
 	];
 
 	public function __construct(string $id, string $src)
 	{
+		$this->utils = Utils::getInstance();
 		$this->info['id'] = $id;
 		$this->info['src'] = $src;
 	}
@@ -37,27 +34,13 @@ class Style extends WordPressCouple
 	}
 	
 	/**
-	 * WP's wp_enqueue_script wrapper
-	 */
-	protected function wpWpEnqueueStyle(...$args)
-	{
-		$wpFunction = self::$wpFunctions[self::WP_FUNCTIONS_WP_ENQUEUE_STYLE];
-	
-		if (empty($wpFunction)) {
-			throw new Exception("WordPress function for Script::wpWpEnqueueStyle() has not been assigned.");
-		}
-
-		return call_user_func_array($wpFunction, $args);
-	}
-
-	/**
 	 * Call WP's add_action
 	 */
 	public function register()
 	{
-		$this->wpAddAction(
-			self::WP_EVENTS_WP_ENQUEUE_SCRIPTS, 
-			function() { $this->enqueueScript(); }, // [$this, 'enqueueScript'], 
+		$this->utils->addAction(
+			'wp_enqueue_scripts', 
+			function() { $this->tryToEnqueue(); }, 
 			$this->priority 
 		);
 	}
@@ -67,23 +50,28 @@ class Style extends WordPressCouple
 	 *
 	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/
 	 */
-	private function enqueueScript()
+	protected function tryToEnqueue()
 	{
 		if ($this->shouldBeEnqueued()) {
-			$this->wpWpEnqueueStyle(
+			$this->utils->enqueueScript(
+				$this->scriptType,
 				$this->id, 
 				$this->src,
 				$this->dependencies,
 				$this->version,
-				$this->isInFooter
+				$this->lastArgument
 			);
+
+			return true;
 		}
+
+		return false;
 	}
 
 	/**
 	 * Determines if the script should be enqueued based on given condition
 	 *
-	 * @see Script::when()
+	 * @see BaseFrontendTag::when()
 	 *
 	 * @return bool
 	 */
@@ -91,37 +79,13 @@ class Style extends WordPressCouple
 	{
 		if (empty($this->conditions)) {
 			return true;	
-		} elseif ($this->isAllConditionsAreTruee()) {
+		} elseif ($this->isAllConditionsAreTrue()) {
 			return true;	
 		}
 
 		return false;
 	}
 
-	/**
-	 * Put the script in the bottom of HTML <body> tag. This is default behaviour.
-	 *
-	 * @return $this
-	 */
-	public function inFooter()
-	{
-		$this->info['isInFooter'] = true;
-
-		return $this;
-	}
-
-	/**
-	 * Put the script in HTML <head> tag.
-	 *
-	 * @return $this
-	 */
-	public function inHead()
-	{
-		echo self::WP_EVENTS_WP_ENQUEUE_SCRIPTS;
-		$this->info['isInFooter'] = false;
-
-		return $this;
-	}
 
 	/**
 	 * Specify version of the script.
@@ -140,24 +104,24 @@ class Style extends WordPressCouple
 	/**
 	 * Add script dependencies.
 	 *
-	 * @param string|Script $script An instance of NWP\Script or name string of registered-script.
+	 * @param string|BaseFrontendTag $script An instance of NWP\BaseFrontenTag or name string of registered-script.
 	 *
 	 * @return $this
 	 */
 	public function dependsOn($script)
 	{
-		$isScriptInstance = $script instanceof Script;
+		$isBaseFrontenTagInstance = $script instanceof BaseFrontenTag;
 
-		if (empty($script) || !$isScriptInstance && !is_string($script)) {
+		if (empty($script) || !$isBaseFrontenTagInstance && !is_string($script)) {
 			throw new InvalidArgumentException(
 				sprintf(
-					'Expected a script argument supplied to Scripts::dependsOn() to be a string or an instance of NWP\Script, %s given',
+					'Expected a script argument supplied to BaseFrontenTag::dependsOn() to be a string or an instance of NWP\BaseFrontenTag, %s given',
 					gettype($script)
 				)
 			);
 		}
 
-		$scriptName = $script instanceof Script ? $script->id : $script;
+		$scriptName = $script instanceof BaseFrontenTag ? $script->id : $script;
 		$this->info['dependencies'][] = $scriptName;
 
 		return $this;
@@ -196,7 +160,7 @@ class Style extends WordPressCouple
 	 *
 	 * @return bool
 	 */
-	private function isAllConditionsAreTruee()
+	private function isAllConditionsAreTrue()
 	{
 		foreach ($this->conditions as $condition) {
 			$result = call_user_func($condition);
