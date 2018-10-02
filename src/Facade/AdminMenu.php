@@ -2,36 +2,14 @@
 
 namespace NWP\Facade;
 
-use NWP\Facade\BaseAdminMenu;
+use NWP\Facade\AbstractAdminMenu;
 
 /**
  * @see https://developer.wordpress.org/reference/functions/add_menu_page/
  * @see https://codex.wordpress.org/Roles_and_Capabilities
  */
-class AdminMenu extends BaseAdminMenu
+class AdminMenu extends AbstractAdminMenu
 {
-	const FUNCTION_ADD_MENU_PAGE = 'add_menu_page';
-
-	const DASHBOARD_PAGE = 'dashboard';
-
-	const POSTS_PAGE = 'posts';
-
-	const MEDIA_PAGE = 'media';
-
-	const PAGES_PAGE = 'pages';
-
-	const COMMENTS_PAGE = 'comments';
-
-	const THEME_PAGE = 'theme';
-
-	const PLUGINS_PAGE = 'plugin';
-
-	const USERS_PAGE = 'users';
-
-	const MANAGEMENT_PAGE = 'management';
-
-	const OPTIONS_PAGE = 'options';
-
 	/**
 	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
@@ -41,6 +19,13 @@ class AdminMenu extends BaseAdminMenu
 		parent::__construct($id, $menuTitle);
 	}
 
+	/**
+	 * Set menu icon url.
+	 *
+	 * @param string $url Icon's url.
+	 *
+	 * @return $this
+	 */
 	public function iconUrl(string $url)
 	{
 		$this->info['iconUrl'] = $url;
@@ -48,6 +33,13 @@ class AdminMenu extends BaseAdminMenu
 		return $this;
 	}
 
+	/**
+	 * Set menu position.
+	 *
+	 * @param int $position Menu position.
+	 *
+	 * @return $this
+	 */
 	public function position(int $position = null)
 	{
 		$this->info['position'] = $position;
@@ -55,6 +47,9 @@ class AdminMenu extends BaseAdminMenu
 		return $this;
 	}
 
+	/**
+	 * Call WP's admin_menu_page(), used inside parent::register()
+	 */
 	protected function add()
 	{
 		call_user_func_array(

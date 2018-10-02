@@ -2,7 +2,7 @@
 
 namespace NWP\Facade;
 
-use NWP\Facade\BaseAdminMenu;
+use NWP\Facade\AbstractAdminMenu;
 use NWP\Facade\AdminMenu;
 use \InvalidArgumentException;
 
@@ -10,7 +10,7 @@ use \InvalidArgumentException;
  * @see https://developer.wordpress.org/reference/functions/add_submenu_page/
  * @see https://codex.wordpress.org/Roles_and_Capabilities
  */
-class AdminSubMenu extends BaseAdminMenu
+class AdminSubMenu extends AbstractAdminMenu
 {
 	const FUNCTION_ADD_SUBMENU_PAGE = 'add_submenu_page';
 
@@ -71,5 +71,10 @@ class AdminSubMenu extends BaseAdminMenu
 				$this->pageContentRenderer
 			]
 		);
+	}
+
+	public function __toString()
+	{
+		return json_encode($this->info);
 	}
 }
