@@ -10,6 +10,8 @@ use NWP\Facade\AbstractAdminMenu;
  */
 class AdminMenu extends AbstractAdminMenu
 {
+	const FUNCTION_ADD_MENU_PAGE = 'add_menu_page';
+
 	/**
 	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title

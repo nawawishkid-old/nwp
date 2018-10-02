@@ -50,7 +50,7 @@ class FrontendScript
 	 *
 	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/
 	 */
-	protected function tryToEnqueue()
+	private function tryToEnqueue()
 	{
 		if ($this->shouldBeEnqueued()) {
 			$this->utils->enqueueScript(
