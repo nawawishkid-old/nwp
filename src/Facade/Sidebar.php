@@ -27,7 +27,9 @@ class Sidebar
 		'before_widget' => '',
 		'after_widget' => '',
 		'before_title' => '',
-		'after_title' => ''
+		'after_title' => '',
+		'class' => '',
+		'description' => ''
 	];
 
 	/**
@@ -50,7 +52,6 @@ class Sidebar
 	/**
 	 * Check if the theme has any active sidebar.
 	 *
-	 * @uses \is_dynamic_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/is_dynamic_sidebar
 	 *
 	 * @return bool
@@ -73,7 +74,6 @@ class Sidebar
 	/**
 	 * Render Sidebar markup (Widget(s))
 	 *
-	 * @uses /dynamic_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/dynamic_sidebar
 	 */
 	public function render()
@@ -84,7 +84,6 @@ class Sidebar
 	/**
 	 * Check if the Sidebar is active i.e. has at least one widget
 	 *
-	 * @uses /is_active_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/is_active_sidebar
 	 *
 	 * @return bool
@@ -97,8 +96,6 @@ class Sidebar
 	/**
 	 * Register the Sidebar to WP
 	 *
-	 * @uses \$this->utils->addAction()
-	 * @uses \register_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/register_sidebar
 	 */
 	public function register()
@@ -111,8 +108,6 @@ class Sidebar
 	/**
 	 * Unregister the Sidebar from WP, usually useful for child theme.
 	 *
-	 * @uses \$this->utils->addAction()
-	 * @uses \unregister_sidebar()
 	 * @see https://codex.wordpress.org/Function_Reference/unregister_sidebar
 	 */
 	public function unregister()
