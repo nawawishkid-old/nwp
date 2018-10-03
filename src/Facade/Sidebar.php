@@ -2,7 +2,9 @@
 
 namespace NWP\Facade;
 
-class Sidebar
+use NWP\AbstractEventCollector;
+
+class Sidebar extends AbstractEventCollector
 {
 	const FUNCTION_IS_DYNAMIC_SIDEBAR = 'is_dynamic_sidebar';
 
@@ -98,11 +100,12 @@ class Sidebar
 	 *
 	 * @see https://codex.wordpress.org/Function_Reference/register_sidebar
 	 */
-	public function register()
+	public function register() : void
 	{
-		$this->utils->addAction(self::EVENT_WIDGETS_INIT, function() {
+		$this->eventCollector->on(self::EVENT_WIDGETS_INIT, function() {
 			call_user_func(self::FUNCTION_REGISTER_SIDEBAR, $this->info);
-		});	
+		});
+		$this->eventCollector->register();
 	}
 
 	/**
@@ -112,9 +115,10 @@ class Sidebar
 	 */
 	public function unregister()
 	{
-		$this->utils->addAction(self::EVENT_WIDGETS_INIT, function() {
+		$this->eventCollector->on(self::EVENT_WIDGETS_INIT, function() {
 			call_user_func(self::FUNCTION_UNREGISTER_SIDEBAR, $this->info);
 		});	
+		$this->eventCollector->register();
 	}
 
 	/**

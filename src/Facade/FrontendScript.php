@@ -2,12 +2,12 @@
 
 namespace NWP\Facade;
 
-use NWP\RegisterController;
+use NWP\AbstractEventCollector;
 use NWP\EventHandlerInterface;
 use \Exception;
 use \InvalidArgumentException;
 
-class FrontendScript extends RegisterController implements EventHandlerInterface 
+class FrontendScript extends AbstractEventCollector implements EventHandlerInterface 
 {
 	const EVENT_WP_ENQUEUE_SCRIPTS = 'wp_enqueue_scripts';
 
@@ -56,7 +56,7 @@ class FrontendScript extends RegisterController implements EventHandlerInterface
 			$this->eventCollector->on(self::EVENT_WP_ENQUEUE_SCRIPTS, [$this, 'eventHandler']);
 		}
 
-		parent::register();
+		$this->eventCollector->register();
 	}
 
 	public function forAdminOnly()
