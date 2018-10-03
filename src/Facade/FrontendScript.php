@@ -43,18 +43,6 @@ class FrontendScript extends RegisterController implements EventHandlerInterface
 		return $this->info[$name];
 	}
 
-	protected function getEventName() : string
-	{
-		return $this->isForAdminOnly 
-			? self::EVENT_ADMIN_ENQUEUE_SCRIPTS 
-			: self::EVENT_WP_ENQUEUE_SCRIPTS;
-	}
-
-	public function registerForAdmin()
-	{
-		$this->eventCollector->on(self::EVENT_ADMIN_ENQUEUE_SCRIPTS, [$this, 'eventHandler']);
-	}
-	
 	/**
 	 * Call WP's add_action
 	 */

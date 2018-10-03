@@ -2,15 +2,14 @@
 
 namespace NWP\Facade;
 
-use NWP\Facade\Utils;
-use NWP\AbstractSelfRegisterController;
+use NWP\RegisterController;
 
 /**
  * @see https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/
  * @see https://developer.wordpress.org/reference/functions/add_meta_box/
  * @see https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
  */
-class MetaBox extends AbstractSelfRegisterController
+class MetaBox extends RegisterController 
 {
 	const EVENT_WP_DASHBOARD_SETUP = 'wp_dashboard_setup';
 
@@ -18,25 +17,33 @@ class MetaBox extends AbstractSelfRegisterController
 
 	const FUNCTION_ADD_META_BOX = 'add_meta_box';
 
+	const SCREEN_DASHBOARD = 'dashboard';
+
+	const SCREEN_CONTEXT_NORMAL = 'normal';
+
+	const SCREEN_CONTEXT_ADVANCED = 'advanced';
+
+	const SCREEN_CONTEXT_SIDE = 'side';
+
+	const PRIORITY_HIGH = 'high';
+
+	const PRIORIY_LOW = 'low';
+
+	const PRIORITY_DEFAULT = 'default';
+
 	private $info = [
 		'id' => '',
 		'title' => '',
-		'contentRenderer' => '',
-		'screens' => [],
-		'context' => null,
-		'priority' => null
+		'contentRenderer' => ''
 	];
 
-	/**
-	 * @property bool Is one of the screens for this meta box dashboard.
-	 */
-	private $oneOfScreensIsDashboard = false;
+	private $contextScreensMap = [];
 
-	public function __construct(string $id, string $title)
+	public function __construct(string $id, string $title, callable $contentRenderer = null)
 	{
-		$this->utils = Utils::getInstance();
 		$this->info['id'] = $id;
 		$this->info['title'] = $title;
+		$this->info['contentRenderer'] = $contentRenderer;
 	}
 
 	public function __get(string $name)
@@ -44,52 +51,29 @@ class MetaBox extends AbstractSelfRegisterController
 		return $this->info[$name];
 	}
 
-	protected function getEventName() : string
-	{
-		return self::EVENT_ADD_META_BOXES;
-	}
-
-	protected function action() : void
-	{
-		call_user_func_array(
-			self::FUNCTION_ADD_META_BOX,
-			[
-				$this->id,
-				$this->title,
-				$this->contentRenderer,
-				$this->screens,
-				$this->context,
-				$this->priority
-			]
-		);
-	}
-
-	private function oneOfScreensIsDashboard()
-	{
-		return in_array('dashboard', $this->screens);
-	}
-
-	private function onDashboardScreen()
-	{
-		$this->eventCollector->on(self::EVENT_WP_DASHBOARD_SETUP, [$this, 'eventHandler']);
-	}
-
-	/**
-	 * Custom register
-	 */
 	public function register() : void
 	{
-		$oneOfScreensIsDashboard = $this->oneOfScreensIsDashboard();
-		$numScreens = count($this->screens);
-		
-		if ($oneOfScreensIsDashboard && $numScreens > 1) {
-			parent::register();
-			$this->onDashboardScreen();
-		} elseif ($oneOfScreensIsDashboard) {
-			$this->onDashboardScreen();
-		} else {
-			parent::register();
+		foreach ($this->contextScreensMap as $context => $detail) {
+			
+			foreach ($detail as $priority => $screens) {
+				$eventName = in_array(self::SCREEN_DASHBOARD, $screens)
+					? self::EVENT_WP_DASHBOARD_SETUP
+					: self::EVENT_ADD_META_BOXES;
+				
+				$this->eventCollector->on($eventName, function () use ($context, $screens, $priority) {
+					call_user_func_array(self::FUNCTION_ADD_META_BOX, [
+						$this->id,
+						$this->title,
+						$this->contentRenderer,
+						$screens,
+						$context,
+						$priority
+					]);
+				});
+			}
 		}
+
+		parent::register();
 	}
 
 	public function addContentRenderer($renderer)
@@ -106,32 +90,21 @@ class MetaBox extends AbstractSelfRegisterController
 	 *
 	 * @return $this
 	 */
-	public function displayOn($screen)
+	public function displayOn($screen, string $context, string $priority = null)
 	{
-		if (is_array($screen)) {
-			$this->info['screens'] = array_merge($this->screens, $screen);
-		} else {
-			$this->info['screens'][] = $screen;
+		// Group screens by common context
+		if (!isset($this->contextScreensMap[$context])) {
+			$this->contextScreensMap[$context] = [];
 		}
 
-		return $this;
-	}
+		$screenKey = is_null($priority) ? 0 : $priority;
 
-	public function context(string $ctx)
-	{
-		$this->info['context'] = $ctx;
-
-		return $this;
-	}
-
-	/**
-	 *
-	 *
-	 * @param string $value Enumeration of 'high', 'low', 'default'
-	 */
-	public function priority(string $value)
-	{
-		$this->info['priority'] = $value;
+		// Group screens by common priority
+		if (!isset($this->contextScreensMap[$context][$screenKey])) {
+			$this->contextScreensMap[$context][$screenKey] = [];
+		}
+	
+		$this->contextScreensMap[$context][$screenKey][] = $screen;
 
 		return $this;
 	}
