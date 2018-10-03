@@ -8,7 +8,7 @@ use NWP\Facade\AbstractAdminMenu;
  * @see https://developer.wordpress.org/reference/functions/add_menu_page/
  * @see https://codex.wordpress.org/Roles_and_Capabilities
  */
-class AdminMenu extends AbstractAdminMenu
+class AdminMenu extends AbstractAdminMenu 
 {
 	const FUNCTION_ADD_MENU_PAGE = 'add_menu_page';
 
@@ -52,7 +52,7 @@ class AdminMenu extends AbstractAdminMenu
 	/**
 	 * Call WP's admin_menu_page(), used inside parent::register()
 	 */
-	protected function add()
+	protected function action() : void
 	{
 		call_user_func_array(
 			self::FUNCTION_ADD_MENU_PAGE,

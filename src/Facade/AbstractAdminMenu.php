@@ -2,11 +2,13 @@
 
 namespace NWP\Facade;
 
+use NWP\EventHandlerInterface;
+use NWP\AbstractEventCollector;
 use NWP\Facade\AdminMenu;
 use NWP\Facade\AdminPage;
 use \InvalidArgumentException;
 
-abstract class AbstractAdminMenu
+abstract class AbstractAdminMenu extends AbstractEventCollector implements EventHandlerInterface
 {
 	const EVENT_ADMIN_MENU = 'admin_menu';
 	
@@ -18,10 +20,7 @@ abstract class AbstractAdminMenu
 		'pageContentRenderer' => ''
 	];
 
-	/**
-	 * Being used inside add_action callback
-	 */
-	abstract protected function add();
+	abstract protected function action() : void;
 
 	/**
 	 * @param string $id Menu slug
@@ -31,8 +30,6 @@ abstract class AbstractAdminMenu
 	{
 		$this->info['id'] = $id;
 		$this->info['menuTitle'] = $menuTitle;
-
-		$this->utils = Utils::getInstance();
 	}
 
 	/**
@@ -43,6 +40,17 @@ abstract class AbstractAdminMenu
 		return $this->info[$name];
 	}
 
+	public function register() : void
+	{
+		$this->eventCollector->on(self::EVENT_ADMIN_MENU, [$this, 'eventHandler']);
+		$this->eventCollector->register();	
+	}
+
+	public function eventHandler() : void
+	{
+		$this->action();
+	}
+
 	public function linkTo(AdminPage $page)
 	{
 		$this->info['capability'] = $page->capability;
@@ -50,16 +58,5 @@ abstract class AbstractAdminMenu
 		$this->info['pageContentRenderer'] = $page->contentRenderer;
 
 		return $this;
-	}
-
-	/**
-	 * Register submenu
-	 */
-	public function register()
-	{
-		$this->utils->addAction(
-			self::EVENT_ADMIN_MENU,
-			function() { $this->add(); }
-		);
 	}
 }

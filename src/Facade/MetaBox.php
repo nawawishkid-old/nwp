@@ -2,14 +2,14 @@
 
 namespace NWP\Facade;
 
-use NWP\RegisterController;
+use NWP\AbstractEventCollector;
 
 /**
  * @see https://developer.wordpress.org/plugins/metadata/custom-meta-boxes/
  * @see https://developer.wordpress.org/reference/functions/add_meta_box/
  * @see https://codex.wordpress.org/Plugin_API/Admin_Screen_Reference
  */
-class MetaBox extends RegisterController 
+class MetaBox extends AbstractEventCollector 
 {
 	const EVENT_WP_DASHBOARD_SETUP = 'wp_dashboard_setup';
 
@@ -53,8 +53,10 @@ class MetaBox extends RegisterController
 
 	public function register() : void
 	{
+		// Iterate through screen context
 		foreach ($this->contextScreensMap as $context => $detail) {
-			
+
+			// Iterate through meta box priority	
 			foreach ($detail as $priority => $screens) {
 				$eventName = in_array(self::SCREEN_DASHBOARD, $screens)
 					? self::EVENT_WP_DASHBOARD_SETUP
@@ -73,7 +75,7 @@ class MetaBox extends RegisterController
 			}
 		}
 
-		parent::register();
+		$this->eventCollector->register();
 	}
 
 	public function addContentRenderer($renderer)

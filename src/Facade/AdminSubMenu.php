@@ -58,7 +58,7 @@ class AdminSubMenu extends AbstractAdminMenu
 	/**
 	 * Being used inside add_action callback
 	 */
-	protected function add()
+	protected function action() : void
 	{
 		call_user_func_array(
 			self::FUNCTION_ADD_SUBMENU_PAGE,
@@ -71,10 +71,5 @@ class AdminSubMenu extends AbstractAdminMenu
 				$this->pageContentRenderer
 			]
 		);
-	}
-
-	public function __toString()
-	{
-		return json_encode($this->info);
 	}
 }
