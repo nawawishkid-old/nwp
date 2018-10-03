@@ -28,6 +28,23 @@ class WPEventCollector implements EventCollectorInterface
 				}
 			}, $this->delay);
 		}
+
+		$this->reset();
+	}
+
+	public function reset()
+	{
+		$this->events = [];
+	}
+
+	public function getEvent(string $eventName)
+	{
+		return $this->events[$eventName];
+	}
+
+	public function getEvents()
+	{
+		return $this->events;
 	}
 
 	public function delay(int $number = null)
