@@ -2,11 +2,17 @@
 
 namespace NWP\Facade;
 
+use NWP\RegisterController;
+use NWP\EventHandlerInterface;
 use \Exception;
 use \InvalidArgumentException;
 
-class FrontendScript
+class FrontendScript extends RegisterController implements EventHandlerInterface 
 {
+	const EVENT_WP_ENQUEUE_SCRIPTS = 'wp_enqueue_scripts';
+
+	const EVENT_ADMIN_ENQUEUE_SCRIPTS = 'admin_enqueue_scripts';
+
 	protected $info = [
 		'id' => '',
 		'src' => '',
@@ -15,6 +21,10 @@ class FrontendScript
 		'priority' => null,
 		'conditions' => []
 	];
+
+	private $isForAdminOnly = false;
+
+	private $isForAdminToo = false;
 
 	public function __construct(string $id, string $src)
 	{
@@ -32,17 +42,49 @@ class FrontendScript
 	{
 		return $this->info[$name];
 	}
+
+	protected function getEventName() : string
+	{
+		return $this->isForAdminOnly 
+			? self::EVENT_ADMIN_ENQUEUE_SCRIPTS 
+			: self::EVENT_WP_ENQUEUE_SCRIPTS;
+	}
+
+	public function registerForAdmin()
+	{
+		$this->eventCollector->on(self::EVENT_ADMIN_ENQUEUE_SCRIPTS, [$this, 'eventHandler']);
+	}
 	
 	/**
 	 * Call WP's add_action
 	 */
-	public function register()
+	public function register() : void
 	{
-		$this->utils->addAction(
-			'wp_enqueue_scripts', 
-			function() { $this->tryToEnqueue(); }, 
-			$this->priority 
-		);
+		if ($this->isForAdminOnly || $this->isForAdminToo) {
+			$this->eventCollector->on(self::EVENT_ADMIN_ENQUEUE_SCRIPTS, [$this, 'eventHandler']);
+		}
+
+		if (!$this->isForAdminOnly) {
+			$this->eventCollector->on(self::EVENT_WP_ENQUEUE_SCRIPTS, [$this, 'eventHandler']);
+		}
+
+		parent::register();
+	}
+
+	public function forAdminOnly()
+	{
+		$this->isForAdminOnly = true;
+		$this->isForAdminToo = false;
+
+		return $this;
+	}
+
+	public function forAdminToo()
+	{
+		$this->isForAdminToo = true;
+		$this->isForAdminOnly = false;
+
+		return $this;
 	}
 
 	/**
@@ -50,7 +92,7 @@ class FrontendScript
 	 *
 	 * @see https://developer.wordpress.org/reference/functions/wp_enqueue_script/
 	 */
-	private function tryToEnqueue()
+	public function eventHandler() : void
 	{
 		if ($this->shouldBeEnqueued()) {
 			$this->utils->enqueueScript(
@@ -61,11 +103,7 @@ class FrontendScript
 				$this->version,
 				$this->lastArgument
 			);
-
-			return true;
 		}
-
-		return false;
 	}
 
 	/**
