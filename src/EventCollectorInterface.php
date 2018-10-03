@@ -4,5 +4,5 @@ namespace NWP;
 
 interface EventCollectorInterface
 {
-    public function on(string $eventName, callable $eventHandler) : void;
+    public function on(string $eventName, callable $eventHandler);
 }
