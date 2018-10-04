@@ -7,6 +7,9 @@ use NWP\Facade\AdminMenu;
 use \InvalidArgumentException;
 
 /**
+ * ===== BUG =====
+ * Can register without parent menu, without any exception been thrown.
+ *
  * @see https://developer.wordpress.org/reference/functions/add_submenu_page/
  * @see https://codex.wordpress.org/Roles_and_Capabilities
  */
@@ -18,9 +21,9 @@ class AdminSubMenu extends AbstractAdminMenu
 	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $id, string $menuTitle)
+	public function __construct(string $menuTitle)
 	{
-		parent::__construct($id, $menuTitle);
+		parent::__construct($menuTitle);
 	}
 
 	/**
@@ -68,7 +71,7 @@ class AdminSubMenu extends AbstractAdminMenu
 				$this->menuTitle,
 				$this->capability,
 				$this->id,
-				$this->pageContentRenderer
+				$this->pageRenderer
 			]
 		);
 	}

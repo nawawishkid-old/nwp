@@ -16,9 +16,9 @@ class AdminMenu extends AbstractAdminMenu
 	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $id, string $menuTitle)
+	public function __construct(string $menuTitle)
 	{
-		parent::__construct($id, $menuTitle);
+		parent::__construct($menuTitle);
 	}
 
 	/**
@@ -61,7 +61,7 @@ class AdminMenu extends AbstractAdminMenu
 				$this->menuTitle,
 				$this->capability,
 				$this->id,
-				$this->pageContentRenderer,
+				$this->pageRenderer,
 				$this->iconUrl,
 				$this->position
 			]

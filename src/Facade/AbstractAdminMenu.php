@@ -17,7 +17,7 @@ abstract class AbstractAdminMenu extends AbstractEventCollector implements Event
 		'menuTitle' => '',
 		'capability' => '',
 		'id' => '',
-		'pageContentRenderer' => ''
+		'pageRenderer' => ''
 	];
 
 	abstract protected function action() : void;
@@ -26,9 +26,8 @@ abstract class AbstractAdminMenu extends AbstractEventCollector implements Event
 	 * @param string $id Menu slug
 	 * @param string $menuTitle Menu title
 	 */
-	public function __construct(string $id, string $menuTitle)
+	public function __construct(string $menuTitle)
 	{
-		$this->info['id'] = $id;
 		$this->info['menuTitle'] = $menuTitle;
 	}
 
@@ -53,9 +52,10 @@ abstract class AbstractAdminMenu extends AbstractEventCollector implements Event
 
 	public function linkTo(AdminPage $page)
 	{
+		$this->info['id'] = $page->id;
 		$this->info['capability'] = $page->capability;
 		$this->info['pageTitle'] = $page->title;
-		$this->info['pageContentRenderer'] = $page->contentRenderer;
+		$this->info['pageRenderer'] = [$page, 'render'];
 
 		return $this;
 	}

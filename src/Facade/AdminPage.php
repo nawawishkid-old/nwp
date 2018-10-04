@@ -2,18 +2,25 @@
 
 namespace NWP\Facade;
 
+use NWP\AbstractEventCollector;
+use NWP\RenderableInterface;
 use \Exception;
 
-class AdminPage
+use \NWP\RendererTrait;
+
+class AdminPage extends AbstractEventCollector implements RenderableInterface
 {
+	use RendererTrait;
+
 	private $info = [
+		'id' => null,
 		'title' => null,
-		'capability' => null,
-		'contentRenderer' => null
+		'capability' => null
 	];
 
-	public function __construct(string $title)
+	public function __construct(string $id, string $title)
 	{
+		$this->info['id'] = $id;
 		$this->info['title'] = $title;
 	}
 
@@ -22,15 +29,12 @@ class AdminPage
 	 */
 	public function __get(string $name)
 	{
-		$info = $this->info[$name];
-
-		if (null === $info) {
-			throw new Exception(
-				sprintf("'%s' value has not been assigned. Please, assign the value first.", $name)
-			);
-		}
-
 		return $this->info[$name];
+	}
+
+	public function register() : void
+	{
+
 	}
 
 	/**
@@ -43,13 +47,6 @@ class AdminPage
 	public function allow(string $capability)
 	{
 		$this->info['capability'] = $capability;
-
-		return $this;
-	}
-
-	public function addContentRenderer(callable $callback)
-	{
-		$this->info['contentRenderer'] = $callback;
 
 		return $this;
 	}
