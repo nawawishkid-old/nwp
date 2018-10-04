@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Design
 
 ## ความตั้งใจ
@@ -147,4 +148,5 @@ $wpEventCollector->registerAll($eventHandler1, $eventHandler2);
 ```php
 
 ```
+
 
