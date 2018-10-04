@@ -1,4 +1,6 @@
-# Design
+# I DECIDED TO SUSPEND THIS PROJECT FOR A WHILE...
+
+sorry for incompleteness. :(
 
 ## ความตั้งใจ
 
