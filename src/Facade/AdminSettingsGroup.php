@@ -30,10 +30,18 @@ class AdminSettingsGroup extends AbstractEventCollector implements EventHandlerI
 
 	private $settingsForm = null;
 
-	public function __construct(string $id = null, string $title = null, callable $renderer = null)
+	public function __construct(string $id = null, string $title = null, $field = null, callable $renderer = null)
 	{
 		$this->info['id'] = $id;
 		$this->info['title'] = $title;
+
+		if (!is_null($field)) {
+			if (is_array($field)) {
+				$this->addFields(...$field);
+			} else {
+				$this->addField($field);
+			}
+		}
 
 		if (!is_null($renderer)) {
 			$this->addRenderer($renderer);

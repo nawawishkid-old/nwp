@@ -34,7 +34,10 @@ class AdminPage extends AbstractEventCollector implements RenderableInterface
 
 	public function register() : void
 	{
-
+		foreach ($this->menus as $menu) {
+			$menu->addEventCollector($this->eventCollector);
+			$menu->register();
+		}
 	}
 
 	/**
@@ -47,6 +50,13 @@ class AdminPage extends AbstractEventCollector implements RenderableInterface
 	public function allow(string $capability)
 	{
 		$this->info['capability'] = $capability;
+
+		return $this;
+	}
+
+	public function addMenu(AbstractAdminMenu $menu)
+	{
+		$this->menus[] = $menu;
 
 		return $this;
 	}

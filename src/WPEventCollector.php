@@ -32,6 +32,22 @@ class WPEventCollector implements EventCollectorInterface
 		$this->reset();
 	}
 
+	// public function registerAll(...$eventHandlers)
+	// {
+	// 	foreach ($eventHandlers	as $eventHandler) {
+	// 		$this->registerOne();
+	// 	}	
+	// }
+
+	private function registerOne($eventName, array $eventHandlers)
+	{
+		add_action($eventName, function (...$args) use ($eventHandlers) {
+			foreach ($eventHandlers as $eventHandler) {
+				call_user_func_array($eventHandler, $args);
+			}
+		}, $this->delay);
+	}
+
 	public function reset()
 	{
 		$this->events = [];

@@ -2,8 +2,14 @@
 
 namespace NWP\Facade;
 
-class AdminSettingsForm
+use \NWP\RenderableInterface;
+use \NWP\RendererTrait;
+use \NWP\AbstractEventCollector;
+
+class AdminSettingsForm extends AbstractEventCollector implements RenderableInterface
 {
+	use RendererTrait;
+
 	const FUNCTION_SETTINGS_FIELDS = 'settings_fields';
 
 	const FUNCTION_DO_SETTINGS_SECTIONS = 'do_settings_sections';
@@ -26,9 +32,22 @@ class AdminSettingsForm
 
 	private $pageId = null;
 
+	/**
+	 * @property array Array of menu
+	 */
+	private $sections = [];
+
 	public function __construct()
 	{
 
+	}
+
+	public function register() : void
+	{
+		foreach ($this->sections as $section) {
+			$section->addEventCollector($this->eventCollector);
+			$section->register();
+		}
 	}
 
 	public function render()
@@ -81,6 +100,22 @@ class AdminSettingsForm
 	public function for(AdminPage $page)
 	{
 		$this->pageId = $page->id;
+
+		return $this;
+	}
+
+	public function addSections(...$sections)
+	{
+		foreach ($sections as $section) {
+			$this->addSection($section);
+		}
+
+		return $this;
+	}
+
+	public function addSection(AdminSettingsSection $section)
+	{
+		$this->sections[] = $section;
 
 		return $this;
 	}
